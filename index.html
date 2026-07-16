@@ -154,7 +154,7 @@
       <label for="time">Horário</label>
       <input id="time" type="time">
       <div class="dialog-actions">
-        <button class="ghost-btn" value="cancel">Cancelar</button>
+        <button class="ghost-btn" type="button" onclick="this.closest('dialog').close()">Cancelar</button>
         <button class="ghost-btn primary" id="saveBtn" value="default">Salvar</button>
       </div>
     </form>
