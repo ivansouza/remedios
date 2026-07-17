@@ -295,6 +295,45 @@
 
   if('serviceWorker' in navigator) addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));
   render();
+
+  // Função global para o APK de alarmes ler os dados
+  window.getMedsData = function() {
+    try {
+      var data = localStorage.getItem('med-control-v1');
+      return data || 'null';
+    } catch(e) {
+      return 'null';
+    }
+  };
+
+  // Botão de exportar (visível apenas quando o APK solicitar)
+  window.exportMedsData = function() {
+    try {
+      var data = localStorage.getItem('med-control-v1');
+      if (data && data !== 'null') {
+        // Tenta usar a Web Share API
+        if (navigator.share) {
+          navigator.share({ title: 'Remédios', text: data });
+        }
+        return data;
+      }
+      return null;
+    } catch(e) {
+      return null;
+    }
+  };
+
+  // Se estiver sendo executado dentro do APK (AndroidBridge presente), avisa
+  if (typeof AndroidBridge !== 'undefined') {
+    setTimeout(function() {
+      var data = window.getMedsData();
+      if (data && data !== 'null') {
+        AndroidBridge.onData(data);
+      } else {
+        AndroidBridge.onError('Nenhum remedio cadastrado');
+      }
+    }, 500);
+  }
 })();
 </script>
 </body>
